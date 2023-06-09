@@ -8,6 +8,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 
+from pageObjects.CheckOutPage import CheckOutPage
+from pageObjects.HomePage import HomePage
 from utilities.BaseClass import BaseClass
 
 
@@ -15,13 +17,21 @@ class TestOne(BaseClass):
 
     def test_e2e(self):
 
-        self.driver.find_element(By.XPATH, "//a[@href='/angularpractice/shop']").click()
-        products = self.driver.find_elements(By.XPATH, "//div[@class='card h-100']")
+        homePage = HomePage(self.driver)
+        # self.driver.find_element(By.XPATH, "//a[@href='/angularpractice/shop']").click()
+        homePage.shopItems().click()
+
+        # products = self.driver.find_elements(By.XPATH, "//div[@class='card h-100']")
+        checkOutPage = CheckOutPage(self.driver)
+        products = checkOutPage.getCardTitles()
 
         for product in products:
             productName = product.find_element(By.XPATH, "div/h4/a").text
+            # productName = checkOutPage.getCardsName().text()
+            print(productName)
             if productName == "Blackberry":
-                product.find_element(By.XPATH, "div/button").click()
+                # product.find_element(By.CSS_SELECTOR, ".btn.btn-info").click()
+                checkOutPage.getCardFooter().click()
 
         self.driver.find_element(By.CSS_SELECTOR, "a[class*='btn-primary']").click()
 
@@ -40,4 +50,3 @@ class TestOne(BaseClass):
         print(successMessage)
 
         assert "Success! Thank you! Your order will be delivered in next few weeks :-)." in successMessage
-
